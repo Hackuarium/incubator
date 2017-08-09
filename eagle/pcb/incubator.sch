@@ -11572,6 +11572,7 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <part name="RXT8" library="rcl" deviceset="R-EU_" device="R0805" value="10k"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="J7" library="lpatiny" deviceset="22-?-02" device="" value="22--02"/>
+<part name="D2" library="lpatiny" deviceset="1N581*" device="D1206" value="1N581D1206"/>
 </parts>
 <sheets>
 <sheet>
@@ -11727,6 +11728,7 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <instance part="GND16" gate="1" x="43.18" y="73.66"/>
 <instance part="J7" gate="-1" x="111.76" y="110.49"/>
 <instance part="J7" gate="-2" x="111.76" y="107.95"/>
+<instance part="D2" gate="G$1" x="12.7" y="55.88"/>
 </instances>
 <busses>
 </busses>
@@ -12537,28 +12539,6 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <label x="-2.54" y="48.26" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$3" class="1">
-<segment>
-<pinref part="D4" gate="G$1" pin="C"/>
-<wire x1="15.24" y1="38.1" x2="30.48" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="38.1" x2="30.48" y2="48.26" width="0.1524" layer="91"/>
-<junction x="30.48" y="38.1"/>
-<pinref part="D7" gate="G$1" pin="C"/>
-<wire x1="15.24" y1="27.94" x2="30.48" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="27.94" x2="30.48" y2="38.1" width="0.1524" layer="91"/>
-<junction x="30.48" y="27.94"/>
-<wire x1="30.48" y1="17.78" x2="30.48" y2="27.94" width="0.1524" layer="91"/>
-<pinref part="D8" gate="G$1" pin="C"/>
-<wire x1="15.24" y1="17.78" x2="30.48" y2="17.78" width="0.1524" layer="91"/>
-<pinref part="D1" gate="G$1" pin="C"/>
-<wire x1="15.24" y1="48.26" x2="30.48" y2="48.26" width="0.1524" layer="91"/>
-<pinref part="CU7" gate="G$1" pin="1"/>
-<pinref part="IC1" gate="G$1" pin="VI"/>
-<wire x1="48.26" y1="38.1" x2="40.64" y2="38.1" width="0.1524" layer="91"/>
-<junction x="40.64" y="38.1"/>
-<wire x1="30.48" y1="38.1" x2="40.64" y2="38.1" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$4" class="0">
 <segment>
 <pinref part="U$3" gate="G$1" pin="IN"/>
@@ -12698,6 +12678,45 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <pinref part="U$3" gate="G$1" pin="IS"/>
 <wire x1="48.26" y1="86.36" x2="43.18" y2="86.36" width="0.1524" layer="91"/>
 <pinref part="RXT8" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$123" class="0">
+<segment>
+<pinref part="D4" gate="G$1" pin="C"/>
+<wire x1="15.24" y1="38.1" x2="30.48" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="38.1" x2="30.48" y2="48.26" width="0.1524" layer="91"/>
+<junction x="30.48" y="38.1"/>
+<pinref part="D7" gate="G$1" pin="C"/>
+<wire x1="15.24" y1="27.94" x2="30.48" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="27.94" x2="30.48" y2="38.1" width="0.1524" layer="91"/>
+<junction x="30.48" y="27.94"/>
+<wire x1="30.48" y1="17.78" x2="30.48" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="D8" gate="G$1" pin="C"/>
+<wire x1="15.24" y1="17.78" x2="30.48" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="D1" gate="G$1" pin="C"/>
+<wire x1="15.24" y1="48.26" x2="30.48" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="CU7" gate="G$1" pin="1"/>
+<pinref part="IC1" gate="G$1" pin="VI"/>
+<wire x1="48.26" y1="38.1" x2="40.64" y2="38.1" width="0.1524" layer="91"/>
+<junction x="40.64" y="38.1"/>
+<wire x1="30.48" y1="38.1" x2="40.64" y2="38.1" width="0.1524" layer="91"/>
+<pinref part="D2" gate="G$1" pin="C"/>
+<wire x1="15.24" y1="55.88" x2="30.48" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="55.88" x2="30.48" y2="48.26" width="0.1524" layer="91"/>
+<junction x="30.48" y="48.26"/>
+<label x="25.4" y="55.88" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="I2C+5V" class="0">
+<segment>
+<pinref part="D2" gate="G$1" pin="A"/>
+<wire x1="10.16" y1="55.88" x2="-2.54" y2="55.88" width="0.1524" layer="91"/>
+<label x="-2.54" y="55.88" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="5"/>
+<wire x1="81.28" y1="248.92" x2="63.5" y2="248.92" width="0.1524" layer="91"/>
+<label x="63.5" y="248.92" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
