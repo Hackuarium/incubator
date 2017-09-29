@@ -10,13 +10,33 @@
 #define TEMPERATURE_EXT_1    A0
 #define TEMPERATURE_EXT_2    A1
 #define TEMPERATURE_PCB      A2
-#define FAN_1                A3
-#define FAN_2                A4
+#define FAN_EXTERNAL         A3
+#define FAN_INTERNAL         A4
+
+#define HBRIDGE_INH  MISO
+#define HBRIDGE_IN1  MOSI
+#define HBRIDGE_IN2  SCK
+
+#define THR_ERROR 13 // define the pin to blink if there is an error
 
 void setup() {
+  Serial.begin(9600);
   setupParameters();
   nilSysBegin();
 }
 
 void loop() {}
 
+
+//Global Thread Locking
+bool lockTimeCriticalZone = false;
+void protectThread() {
+  while (lockTimeCriticalZone) {
+    nilThdSleepMilliseconds(5);
+  }
+  lockTimeCriticalZone = true;
+}
+
+void unprotectThread() {
+  lockTimeCriticalZone = false;
+}

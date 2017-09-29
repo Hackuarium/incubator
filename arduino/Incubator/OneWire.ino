@@ -1,5 +1,6 @@
-
 #include <OneWire.h>
+
+//#define DEBUG_ONEWIRE 1
 
 byte oneWireAddress[8];
 
@@ -19,29 +20,25 @@ OneWire oneWire3(TEMPERATURE_PCB);
 void getTemperature(OneWire &ow, int parameter, byte errorFlag);
 void oneWireInfoSS(OneWire &ow, Print* output) ;
 
-NIL_WORKING_AREA(waThreadTemp, 300);
-
-
-NIL_THREAD(ThreadTemp, arg) {
-  nilThdSleepMilliseconds(200);
+NIL_WORKING_AREA(waThreadTemperature, 300);
+NIL_THREAD(ThreadTemperature, arg) {
+  nilThdSleepMilliseconds(1000);
 #ifdef DEBUG_ONEWIRE
   nilThdSleepMilliseconds(2000);
-  Serial.println(F("OneWire Thread"));
 #endif
 
   while (true) {
 #ifdef TEMPERATURE_EXT_1
-    getTemperature(oneWire1, PARAM_TEMP_LIQ, FLAG_TEMP_LIQ_PROBE_ERROR);
+    getTemperature(oneWire1, PARAM_TEMP_EXT_1, FLAG_TEMP_EXT_1_PROBE_ERROR);
 #endif
 
 #ifdef TEMPERATURE_EXT_2
-    getTemperature(oneWire2, PARAM_TEMP_PCB, FLAG_TEMP_PCB_PROBE_ERROR);
+    getTemperature(oneWire2, PARAM_TEMP_EXT_2, FLAG_TEMP_EXT_2_PROBE_ERROR);
 #endif
 
 #ifdef TEMPERATURE_PCB
     getTemperature(oneWire3, PARAM_TEMP_PCB, FLAG_TEMP_PCB_PROBE_ERROR);
 #endif
-
     nilThdSleepMilliseconds(200);
   }
 }
@@ -77,7 +74,7 @@ void getTemperature(OneWire &ow, int parameter, byte errorFlag) {
 
 #ifdef DEBUG_ONEWIRE
   Serial.print(F("ROM ="));
-  for ( i = 0; i < 8; i++) {
+  for ( byte i = 0; i < 8; i++) {
     Serial.write(' ');
     Serial.print(addr[i], HEX);
   }
@@ -171,7 +168,7 @@ void getTemperature(OneWire &ow, int parameter, byte errorFlag) {
 #ifdef DEBUG_ONEWIRE
   Serial.print(F("  T = "));
   Serial.print(celsius);
-  Serial.println(F("C"));
+  Serial.println(F("°C"));
 #endif
   setParameter(parameter, (int)(celsius * 100));
   ow.reset_search();

@@ -8,15 +8,15 @@ NIL_THREAD(ThreadMonitoring, arg) {
   // we need to make a RESET all the time otherwise automatic reboot: wdt_reset();
   wdt_enable(WDTO_8S);
 
-  byte turnOn=0;
-  pinMode(THR_MONITORING, OUTPUT);   
+  byte turnOn = 0;
+  pinMode(THR_MONITORING, OUTPUT);
   while (TRUE) {
-    turnOn=~turnOn;
-    digitalWrite(THR_MONITORING,turnOn);
+    turnOn = ~turnOn;
+    digitalWrite(THR_MONITORING, turnOn);
     nilThdSleepMilliseconds(250);
-    if (getParameter(PARAM_STATUS)!=99) {
+    if (getParameter(PARAM_STATUS) != 99) {
       wdt_reset();
-    } 
+    }
     else {
       nilThdSleepMilliseconds(750);
     }
@@ -33,12 +33,18 @@ NIL_THREADS_TABLE_ENTRY(NULL, ThreadSerial, NULL, waThreadSerial, sizeof(waThrea
 NIL_THREADS_TABLE_ENTRY(NULL, ThreadLcd, NULL, waThreadLcd, sizeof(waThreadLcd))
 #endif
 
+#ifdef THR_ERROR
+NIL_THREADS_TABLE_ENTRY(NULL, ThreadError, NULL, waThreadError, sizeof(waThreadError))
+#endif
+
+NIL_THREADS_TABLE_ENTRY(NULL, ThreadPID, NULL, waThreadPID, sizeof(waThreadPID))
+
 NIL_THREADS_TABLE_ENTRY(NULL, ThreadTemperature, NULL, waThreadTemperature, sizeof(waThreadTemperature))
 
 
 
 #ifdef THR_MONITORING
-NIL_THREADS_TABLE_ENTRY(NULL, ThreadMonitoring, NULL, waThreadMonitoring, sizeof(waThreadMonitoring))                           
+NIL_THREADS_TABLE_ENTRY(NULL, ThreadMonitoring, NULL, waThreadMonitoring, sizeof(waThreadMonitoring))
 #endif
 
 

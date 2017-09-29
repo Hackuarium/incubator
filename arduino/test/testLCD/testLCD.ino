@@ -1,6 +1,3 @@
-#include <LiquidCrystal.h>
-
-
 #define LCD_E      6
 #define LCD_RS     12
 #define LCD_D4     8
@@ -12,12 +9,8 @@
 
 byte pins[] = {LCD_E, LCD_RS, LCD_D4, LCD_D5, LCD_D6, LCD_D7, LCD_VO};
 
-// initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(LCD_RS, LCD_E, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
-void setup() {
-
-}
+void setup() {}
 
 void loop() {
   testPins(); // just to test connections with oscilloscope

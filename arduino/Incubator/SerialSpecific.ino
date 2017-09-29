@@ -1,27 +1,24 @@
 void processSpecificCommand(char* data, char* paramValue, Print* output) {
 
+
   switch (data[0]) {
+    case 'c':
+      setParameter(PARAM_STATUS, STATE_CONSTANT);
+      break;
     case 'd':
-      printData(output);
+      setParameter(PARAM_STATUS, STATE_OFF);
       break;
-    case 'k':
-      setParameter(PARAM_STATUS, STATUS_KINETIC);
-      setParameter(PARAM_NEXT_EXP, 0);
+    case 'p':
+      setParameter(PARAM_STATUS, STATE_PROGRAM);
+      setParameter(PARAM_CURRENT_TIME, 0);
       break;
-    case 'r':
-      setParameter(PARAM_STATUS, STATUS_ONE_SPECTRUM);
-      setParameter(PARAM_NEXT_EXP, 0);
-      break;
-    case 't':
-      testRGB();
-      break;
+
   }
 }
 
 void printSpecificHelp(Print * output) {
-  output->println(F("(d)ata"));
-  output->println(F("(k)inetic"));
-  output->println(F("(r)un experiment"));
-  output->println(F("(t)est"));
+  output->println(F("(c)onstant"));
+  output->println(F("(d)isable"));
+  output->println(F("(p)rogram"));
 }
 

@@ -1,7 +1,7 @@
 #include <OneWire.h>
 
 // Need to test A0 and A1 (external) and A2 (on PCB)
-OneWire  ds(A1);  
+OneWire  ds(A2);
 
 void setup(void) {
   Serial.begin(9600);
