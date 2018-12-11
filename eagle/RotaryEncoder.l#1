@@ -63,9 +63,9 @@
 <pad name="ATX" x="-10.795" y="2.54" drill="1.27" shape="square"/>
 <pad name="CGND" x="-10.795" y="0" drill="1.27" shape="square"/>
 <pad name="BRX" x="-10.795" y="-2.54" drill="1.2858" shape="square"/>
-<pad name="EGND" x="3.81" y="-2.54" drill="1.285875" shape="square"/>
-<pad name="D7" x="3.81" y="2.54" drill="1.285875" shape="square"/>
-<pad name="P$2" x="-3.175" y="6.35" drill="2.682240625" shape="square"/>
+<pad name="EGND" x="3.81" y="-2.54" drill="1.27" shape="square"/>
+<pad name="D7" x="3.81" y="2.54" drill="1.27" shape="square"/>
+<pad name="P$2" x="-3.175" y="6.35" drill="2.555240625" shape="square"/>
 <pad name="P$1" x="-3.175" y="-6.35" drill="2.6828" shape="square"/>
 <text x="-15.875" y="1.905" size="1.27" layer="21">GND</text>
 <text x="-10.16" y="3.81" size="1.27" layer="21">TX</text>
