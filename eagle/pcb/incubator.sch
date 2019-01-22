@@ -15185,9 +15185,9 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <label x="127" y="167.64" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="137.16" y1="55.88" x2="137.16" y2="58.42" width="0.1524" layer="91"/>
-<label x="134.62" y="58.42" size="1.778" layer="95"/>
-<pinref part="R6" gate="R" pin="3"/>
+<pinref part="R1" gate="G$1" pin="1"/>
+<wire x1="218.44" y1="185.42" x2="213.36" y2="185.42" width="0.1524" layer="91"/>
+<label x="218.44" y="187.96" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 <net name="D9*" class="0">
@@ -15226,22 +15226,12 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <wire x1="116.84" y1="195.58" x2="132.08" y2="195.58" width="0.1524" layer="91"/>
 <label x="127" y="195.58" size="1.778" layer="95"/>
 </segment>
-<segment>
-<pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="218.44" y1="154.94" x2="213.36" y2="154.94" width="0.1524" layer="91"/>
-<label x="218.44" y="157.48" size="1.778" layer="95" rot="R180"/>
-</segment>
 </net>
 <net name="A4" class="0">
 <segment>
 <pinref part="32U4" gate="G$1" pin="PF1(ADC1)"/>
 <wire x1="116.84" y1="198.12" x2="132.08" y2="198.12" width="0.1524" layer="91"/>
 <label x="127" y="198.12" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="R1" gate="G$1" pin="1"/>
-<wire x1="218.44" y1="185.42" x2="213.36" y2="185.42" width="0.1524" layer="91"/>
-<label x="218.44" y="187.96" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 <net name="A5" class="0">
@@ -15313,11 +15303,9 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <label x="127" y="144.78" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="175.26" y1="43.18" x2="154.94" y2="43.18" width="0.1524" layer="91"/>
-<label x="154.94" y="43.18" size="1.778" layer="95"/>
-<pinref part="U$11" gate="G$1" pin="E"/>
-<junction x="175.26" y="43.18"/>
-<wire x1="175.26" y1="43.18" x2="167.64" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="R2" gate="G$1" pin="1"/>
+<wire x1="218.44" y1="154.94" x2="213.36" y2="154.94" width="0.1524" layer="91"/>
+<label x="218.44" y="157.48" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 <net name="D10*" class="0">
@@ -15473,11 +15461,11 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <label x="127" y="142.24" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="175.26" y1="48.26" x2="154.94" y2="48.26" width="0.1524" layer="91"/>
-<label x="154.94" y="48.26" size="1.778" layer="95"/>
-<pinref part="U$11" gate="G$1" pin="RS"/>
-<junction x="175.26" y="48.26"/>
-<wire x1="175.26" y1="48.26" x2="167.64" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="175.26" y1="43.18" x2="154.94" y2="43.18" width="0.1524" layer="91"/>
+<label x="154.94" y="43.18" size="1.778" layer="95"/>
+<pinref part="U$11" gate="G$1" pin="E"/>
+<junction x="175.26" y="43.18"/>
+<wire x1="175.26" y1="43.18" x2="167.64" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="D8*" class="0">
@@ -15561,6 +15549,13 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <pinref part="32U4" gate="G$1" pin="PD4(ICP1/ADC8)"/>
 <wire x1="116.84" y1="137.16" x2="132.08" y2="137.16" width="0.1524" layer="91"/>
 <label x="127" y="137.16" size="1.778" layer="95"/>
+</segment>
+<segment>
+<wire x1="175.26" y1="48.26" x2="154.94" y2="48.26" width="0.1524" layer="91"/>
+<label x="154.94" y="48.26" size="1.778" layer="95"/>
+<pinref part="U$11" gate="G$1" pin="RS"/>
+<junction x="175.26" y="48.26"/>
+<wire x1="175.26" y1="48.26" x2="167.64" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -15657,6 +15652,11 @@ Basic 0.1" spaced jumper. Use with breakaway headers.</description>
 <wire x1="175.26" y1="53.34" x2="167.64" y2="53.34" width="0.1524" layer="91"/>
 <label x="154.94" y="53.34" size="1.778" layer="95"/>
 <pinref part="P+6" gate="VCC" pin="VCC"/>
+<wire x1="147.32" y1="53.34" x2="142.24" y2="53.34" width="0.1524" layer="91"/>
+<junction x="147.32" y="53.34"/>
+<wire x1="142.24" y1="53.34" x2="142.24" y2="55.88" width="0.1524" layer="91"/>
+<pinref part="R6" gate="R" pin="3"/>
+<wire x1="142.24" y1="55.88" x2="137.16" y2="55.88" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ISP+5V" class="0">
