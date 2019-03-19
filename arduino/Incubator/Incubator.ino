@@ -9,9 +9,9 @@
 
 #define TEMPERATURE_EXT_1    A0
 #define TEMPERATURE_EXT_2    A1
-#define TEMPERATURE_PCB      A2
-#define FAN_EXTERNAL         A3
-#define FAN_INTERNAL         A4
+ #define TEMPERATURE_PCB      A2
+#define FAN_EXTERNAL         6
+#define FAN_INTERNAL         11
 
 #define HBRIDGE_INH  MISO
 #define HBRIDGE_IN1  MOSI

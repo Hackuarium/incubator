@@ -2,17 +2,17 @@
 
 #ifdef THR_LCD
 
-
 #include <LiquidCrystal.h>
+#include <Rotary.h>
 
-#define LCD_E      6
-#define LCD_RS     12
+#define LCD_E      12
+#define LCD_RS     A6
 #define LCD_D4     8
 #define LCD_D5     9
 #define LCD_D6     10
 #define LCD_D7     5
 #define LCD_BL     13    // back light
-#define LCD_VO     11
+
 
 #define LCD_NB_ROWS     2
 #define LCD_NB_COLUMNS  16
@@ -29,9 +29,11 @@ int rotaryCounter = 0;
 boolean captureCounter = false; // use when you need to setup a parameter from the menu
 long lastRotaryEvent = millis();
 
+// Rotary encoder is wired with the common to ground and the two
+// outputs to pins 2 and 3.
+Rotary rotary = Rotary(ROT_A, ROT_B);
 
-
-NIL_WORKING_AREA(waThreadLcd, 192);
+NIL_WORKING_AREA(waThreadLcd, 250);
 NIL_THREAD(ThreadLcd, arg) {
   // initialize the library with the numbers of the interface pins
 
@@ -368,39 +370,60 @@ void lcdPrintBlank(byte number) {
 }
 
 void setupRotary() {
-  pinMode(ROT_A, INPUT_PULLUP);
-  pinMode(ROT_B, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(ROT_A), rotate, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ROT_B), rotate, CHANGE);
   pinMode(ROT_PUSH, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(ROT_A), eventRotaryA, FALLING);
   attachInterrupt(digitalPinToInterrupt(ROT_PUSH), eventRotaryPressed, CHANGE);
 }
 
 boolean accelerationMode = false;
 int lastIncrement = 0;
 
-void eventRotaryA() {
-  int increment = - (digitalRead(ROT_B) * 2 - 1);
-  long current = millis();
-  long diff = current - lastRotaryEvent;
-  if (lastIncrement != increment && diff < 100) return;
-  lastIncrement = increment;
+
+boolean rotaryMayPress = true; // be sure to go through release. Seems to allow some deboucing
+
+
+void rotate() {
+
+  int increment = 0;
+
+  byte direction = rotary.process();
+
+  
+  if (direction == DIR_CW) {
+    increment = -1;
+  } else if (direction == DIR_CCW) {
+    increment = 1;
+  }
+
+  if (increment == 0) return;
+
+  long unsigned current = millis();
+  long unsigned diff = current - lastRotaryEvent;
   lastRotaryEvent = current;
-  if (diff < 5) return;
-  if (diff < 30) {
-    if (accelerationMode) {
-      rotaryCounter -= (increment * 20);
-    } else {
-      accelerationMode = true;
-      rotaryCounter -= increment;
-    }
+
+  if (diff < 50) {
+    accelerationMode++;
+    if (accelerationMode < 5) return;
+    if (accelerationMode > 20) accelerationMode = 20;
   } else {
-    accelerationMode = false;
-    rotaryCounter -= increment;
+    accelerationMode = 0;
+  }
+
+/*
+  if (getParameterBit(PARAM_FLAGS, PARAM_FLAG_INVERT_ROTARY) == 1) {
+    increment *= -1;
+  }
+*/
+  if (accelerationMode > 4) {
+    rotaryCounter += (increment * accelerationMode);
+  } else {
+    if (accelerationMode == 0) {
+      rotaryCounter += increment;
+    }
   }
 }
 
-
-boolean rotaryMayPress = true; // be sure to go through release. Seems to allow some deboucing
 
 void eventRotaryPressed() {
   byte state = digitalRead(ROT_PUSH);
