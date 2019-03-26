@@ -75,7 +75,7 @@ void lcdMenu() {
   rotaryPressed = false;
   int counter = rotaryCounter;
   rotaryCounter = 0;
-  switch (currentMenu < 100 ? currentMenu - currentMenu % 10 : currentMenu - currentMenu % 50) {
+  switch (currentMenu % 10 ) {
     case 0:
       lcdMenuHome(counter, doAction);
       break;
@@ -83,32 +83,39 @@ void lcdMenu() {
       lcdMenuSettings(counter, doAction);
       break;
     case 20:
-      lcdDefault(counter, doAction);
+      lcdStatus(counter, doAction);
       break;
     case 40:
       lcdUtilities(counter, doAction);
       break;
-    case 100:
-      lcdResults(counter, doAction);
-      break;
   }
 }
 
-void lcdDefault(int counter, boolean doAction) {
+void lcdStatus(int counter, boolean doAction) {
+  /*
+     #define PARAM_TEMP_EXT_1    0
+    #define PARAM_TEMP_EXT_2    1
+    #define PARAM_TEMP_PCB      2
+    #define PARAM_TEMP_TARGET   3
+    #define PARAM_HBRIDGE_PID   4
+  */
   if (doAction) setParameter(PARAM_MENU, 0);
-  updateCurrentMenu(counter, 6);
+  updateCurrentMenu(counter, 1); // only one menu
   if (noEventCounter < 2) lcd.clear();
   byte menu = getParameter(PARAM_MENU) % 10;
-  if (menu < 5) {
-    lcd.setCursor(0, 0);
-    lcdPrintBlank(2);
-  } else {
-    lcd.setCursor(0, 0);
-    epochToString(now(), &lcd);
-    lcd.setCursor(6, 1);
-    lcd.print("s:");
-    lcd.print(millis() / 1000);
-  }
+  lcd.setCursor(0, 0);
+  lcd.print("T1:");
+  lcd.print(getParameter(PARAM_TEMP_EXT_1));
+  lcd.print(" ");
+  lcd.setCursor(8, 0);
+  lcd.print("T2:");
+  lcd.print(getParameter(PARAM_TEMP_EXT_2));
+  lcd.print(" ");
+  lcdPrintBlank(2);
+  lcd.setCursor(0, 1);
+  lcdPrintBlank(2);
+  lcd.setCursor(8, 1);
+  lcdPrintBlank(2);
 }
 
 
@@ -255,7 +262,7 @@ void lcdMenuSettings(int counter, boolean doAction) {
       currentParameter = PARAM_TEMP_TARGET_1;
       minValue = -10;
       maxValue = 50;
-     strcpy(currentUnit, "\xDF\x43");
+      strcpy(currentUnit, "\xDF\x43");
       break;
     case 2:
       lcd.print(F("Wating time 1"));
@@ -269,7 +276,7 @@ void lcdMenuSettings(int counter, boolean doAction) {
       currentParameter = PARAM_TEMP_TARGET_2;
       minValue = -10;
       maxValue = 50;
-     strcpy(currentUnit, "\xDF\x43");
+      strcpy(currentUnit, "\xDF\x43");
       break;
     case 4:
       lcd.print(F("Waiting time 2"));
@@ -330,34 +337,6 @@ void lcdMenuSettings(int counter, boolean doAction) {
 }
 
 
-void lcdResults(int counter, boolean doAction) {
-  if (doAction) setParameter(PARAM_MENU, 0);
-  if (noEventCounter < 2) lcd.clear();
-
-  // calculate the last experiment based on epoch of each experiment
-  /*
-    byte lastExperiment = 1;
-    for (lastExperiment; lastExperiment < MAX_EXPERIMENTS; lastExperiment++) {
-    if (data[lastExperiment * 6] <= data[0]) break;
-    }
-
-    updateCurrentMenu(counter, lastExperiment - 1, 50);
-    byte start = getParameter(PARAM_MENU) % 50;
-    for (byte i = start; i < min(lastExperiment, start + LCD_NB_ROWS); i++) {
-    lcd.setCursor(0, i - start);
-    lcd.print((data[i * 6] - data[0]) / 1000);
-    lcd.print(" ");
-    if (data[getParameter(PARAM_COLOR)] == LONG_MAX_VALUE || data[i * 6 + getParameter(PARAM_COLOR)] == LONG_MAX_VALUE) {
-    lcd.print(F("OVER"));
-    } else {
-    lcd.print(log10((double)data[getParameter(PARAM_COLOR)] / (double)data[i * 6 + getParameter(PARAM_COLOR)]));
-    }
-    lcd.print(" ");
-    lcd.print(data[i * 6 + getParameter(PARAM_COLOR)]);
-    lcdPrintBlank(6);
-    }
-  */
-}
 
 /*
   UTIILITIES FUNCTIONS
@@ -389,7 +368,7 @@ void rotate() {
 
   byte direction = rotary.process();
 
-  
+
   if (direction == DIR_CW) {
     increment = -1;
   } else if (direction == DIR_CCW) {
@@ -410,11 +389,11 @@ void rotate() {
     accelerationMode = 0;
   }
 
-/*
-  if (getParameterBit(PARAM_FLAGS, PARAM_FLAG_INVERT_ROTARY) == 1) {
-    increment *= -1;
-  }
-*/
+  /*
+    if (getParameterBit(PARAM_FLAGS, PARAM_FLAG_INVERT_ROTARY) == 1) {
+      increment *= -1;
+    }
+  */
   if (accelerationMode > 4) {
     rotaryCounter += (increment * accelerationMode);
   } else {

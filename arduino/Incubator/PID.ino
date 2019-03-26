@@ -40,12 +40,12 @@ NIL_THREAD(ThreadPID, arg) {
         digitalWrite(FAN_INTERNAL, LOW);
       }
       if (isEnabled(FLAG_PID_CONTROL)) {
-        digitalWrite(HBRIDGE_INH, HIGH); 
+        digitalWrite(HBRIDGE_INH, HIGH);
 
         heatingRegInput = getParameter(PARAM_TEMP_EXT_1);
         heatingRegSetpoint = getParameter(PARAM_TEMP_TARGET);
         heatingRegPID.Compute();    // the computation takes only 30ms!
-        
+
         setParameter(PARAM_HBRIDGE_PID, heatingRegOutput);
         analogWrite(HBRIDGE_IN1, heatingRegOutput);
       } else {

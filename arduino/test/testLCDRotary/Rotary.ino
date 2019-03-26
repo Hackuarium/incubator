@@ -1,6 +1,4 @@
-#include <Rotary
-
-.h>
+#include <Rotary.h>
 
 #define ROT_A      0
 #define ROT_B      1
@@ -64,25 +62,6 @@ void setupRotary() {
 }
 
 
-
-void eventRotaryA() {
-  int increment = digitalRead(ROT_B) * 2 - 1;
-  long current = millis();
-  long diff = current - lastRotaryEvent;
-  lastRotaryEvent = current;
-  if (diff < 15) return;
-  if (diff < 50) {
-    if (accelerationMode) {
-      rotaryCounter -= (increment * 5);
-    } else {
-      accelerationMode = true;
-      rotaryCounter -= increment;
-    }
-  } else {
-    accelerationMode = false;
-    rotaryCounter -= increment;
-  }
-}
 
 
 boolean rotaryMayPress = true; // be sure to go through release. Seems to allow some deboucing

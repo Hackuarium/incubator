@@ -45,9 +45,9 @@ void saveParameters() {
   for (byte i = 0; i < MAX_PARAM; i++) {
     eeprom_write_word((uint16_t*) EE_START_PARAM + i, parameters[i]);
   }
-  #ifdef EVENT_LOGGING
+#ifdef EVENT_LOGGING
   writeLog(EVENT_SAVE_ALL_PARAMETER, 0);
-  #endif
+#endif
 }
 
 /*
@@ -58,9 +58,9 @@ void setAndSaveParameter(byte number, int value) {
   parameters[number] = value;
   //The address of the parameter is given by : EE_START_PARAM+number*2
   eeprom_write_word((uint16_t*) EE_START_PARAM + number, value);
-  #ifdef EVENT_LOGGING
+#ifdef EVENT_LOGGING
   writeLog(EVENT_PARAMETER_SET + number, value);
-  #endif
+#endif
 }
 
 

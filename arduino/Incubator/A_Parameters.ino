@@ -1,5 +1,6 @@
 #define MAX_PARAM 26   // If the MAX_PARAM change you need to change the pointer in the EEPROM
 
+
 #define EE_START_PARAM           0 // We save the parameter from byte 0 of EEPROM
 #define EE_LAST_PARAM            (MAX_PARAM*2-1) // The last parameter is stored at byte 50-51
 
