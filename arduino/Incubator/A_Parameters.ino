@@ -76,3 +76,12 @@ void checkParameters()
     resetParameters();
   }
 }
+
+boolean isError(int filter) {
+  if ((getParameter(PARAM_ERROR) & filter) != 0) return true;
+  return false;
+}
+
+boolean isError() {
+  return (getParameter(PARAM_ERROR) != 0);
+}
