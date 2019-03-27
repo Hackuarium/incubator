@@ -1,0 +1,3 @@
+[submodule "arduino/Incubator/libino"]
+	path = arduino/Incubator/libino
+	url = https://github.com/hackuarium/libino

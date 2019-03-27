@@ -1,4 +1,4 @@
-#include <PID_v1.h>
+#include "PID/PID_v1.h"
 
 #define PID_OUTPUT_LIMIT 255
 
@@ -55,9 +55,3 @@ NIL_THREAD(ThreadPID, arg) {
     nilThdSleepMilliseconds(500);
   }
 }
-
-
-
-
-
-

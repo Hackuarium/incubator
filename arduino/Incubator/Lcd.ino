@@ -3,7 +3,7 @@
 #ifdef THR_LCD
 
 #include <LiquidCrystal.h>
-#include <Rotary.h>
+#include "libino/RotaryEncoder/Rotary.cpp"
 
 #define LCD_E      12
 #define LCD_RS     A6
@@ -418,6 +418,3 @@ void eventRotaryPressed() {
 }
 
 #endif
-
-
-

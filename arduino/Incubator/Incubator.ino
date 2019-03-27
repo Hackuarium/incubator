@@ -1,10 +1,7 @@
-#include <NilRTOS.h>
-// Library that allows to start the watch dog allowing automatic reboot in case of crash
-// The lowest priority thread should take care of the watch dog
-#include <avr/wdt.h>
 
-// git clone https://github.com/PaulStoffregen/Time
-#include <TimeLib.h>
+#define THR_SERIAL      1
+#define MAX_PARAM       26
+#include "libino/hack.h"
 
 
 #define TEMPERATURE_EXT_1    A0
@@ -21,23 +18,9 @@
 #define THR_ERROR 13 // define the pin to blink if there is an error
 
 void setup() {
-  Serial.begin(9600);
   setupParameters();
+   checkParameters(); 
   nilSysBegin();
 }
 
 void loop() {}
-
-
-//Global Thread Locking
-bool lockTimeCriticalZone = false;
-void protectThread() {
-  while (lockTimeCriticalZone) {
-    nilThdSleepMilliseconds(5);
-  }
-  lockTimeCriticalZone = true;
-}
-
-void unprotectThread() {
-  lockTimeCriticalZone = false;
-}

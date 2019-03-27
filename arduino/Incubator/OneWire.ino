@@ -1,4 +1,4 @@
-#include <OneWire.h>
+#include "libino/onewire/OneWire.cpp"
 
 //#define DEBUG_ONEWIRE 1
 
@@ -202,4 +202,3 @@ void oneWireInfoSS(OneWire &ow, Print* output) { // TODO
   }
   unprotectThread();
 }
-
