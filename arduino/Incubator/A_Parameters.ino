@@ -85,3 +85,24 @@ boolean isError(int filter) {
 boolean isError() {
   return (getParameter(PARAM_ERROR) != 0);
 }
+
+
+// this method will check if there was a change in the error status and log it in this case
+boolean saveAndLogError(boolean isError, byte errorFlag) {
+  if (isError) {
+    if (setParameterBit(PARAM_ERROR, errorFlag)) { // the status has changed
+#ifdef EVENT_LOGGING
+      writeLog(EVENT_ERROR_FAILED, errorFlag);
+#endif
+      return true;
+    }
+  } else {
+    if (clearParameterBit(PARAM_ERROR, errorFlag)) { // the status has changed
+#ifdef EVENT_LOGGING
+      writeLog(EVENT_ERROR_RECOVER, errorFlag);
+#endif
+      return true;
+    }
+  }
+  return false;
+}
