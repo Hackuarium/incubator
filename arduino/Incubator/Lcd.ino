@@ -153,8 +153,6 @@ void lcdMenuHome(int counter, boolean doAction) {
     lcd.setCursor(0, line);
     if ( getParameter(PARAM_MENU) % 10 + line <= lastMenu) lcdNumberLine(line);
 
-
-
     switch (getParameter(PARAM_MENU) % 10 + line) {
       case 0:
         lcd.print(F("Stop control"));
@@ -201,7 +199,7 @@ void lcdMenuHome(int counter, boolean doAction) {
 void lcdUtilities(int counter, boolean doAction) {
   if (noEventCounter > 2) return;
   lcd.clear();
-  byte lastMenu = 2;
+  byte lastMenu = 1;
   updateCurrentMenu(counter, lastMenu);
 
   for (byte line = 0; line < LCD_NB_ROWS; line++) {
@@ -209,19 +207,14 @@ void lcdUtilities(int counter, boolean doAction) {
     if ( getParameter(PARAM_MENU) % 10 + line <= lastMenu) lcdNumberLine(line);
 
     switch (getParameter(PARAM_MENU) % 10 + line) {
-      case 0:
-        lcd.print(F("Option 1"));
-        if (doAction) {
 
+      case 0:
+        lcd.print(F("Reboot"));
+        if (doAction) {
+          reboot();
         }
         break;
       case 1:
-        lcd.print(F("Option 2"));
-        if (doAction) {
-
-        }
-        break;
-      case 2:
         lcd.print(F("Reset parameters"));
         if (doAction) {
           resetParameters();
