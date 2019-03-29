@@ -1,4 +1,4 @@
-#include "PID/PID_v1.h"
+#include "libino/PID/PID_v1.h"
 
 #define PID_OUTPUT_LIMIT 255
 
@@ -29,17 +29,20 @@ NIL_THREAD(ThreadPID, arg) {
       digitalWrite(FAN_INTERNAL, LOW);
       digitalWrite(HBRIDGE_INH, LOW);
     } else {
-      if (isEnabled(FLAG_FAN_EXTERNAL_CONTROL)) {
+      if ( getParameterBit(PARAM_ENABLED,FLAG_FAN_EXTERNAL_CONTROL)) {
         digitalWrite(FAN_EXTERNAL, HIGH);
       } else {
         digitalWrite(FAN_EXTERNAL, LOW);
       }
-      if (isEnabled(FLAG_FAN_INTERNAL_CONTROL)) {
+      if ( getParameterBit(PARAM_ENABLED,FLAG_FAN_INTERNAL_CONTROL)) {
         digitalWrite(FAN_INTERNAL, HIGH);
       } else {
         digitalWrite(FAN_INTERNAL, LOW);
       }
-      if (isEnabled(FLAG_PID_CONTROL)) {
+
+
+      
+      if ( getParameterBit(PARAM_ENABLED,FLAG_PID_CONTROL)) {
         digitalWrite(HBRIDGE_INH, HIGH);
 
         heatingRegInput = getParameter(PARAM_TEMP_EXT_1);

@@ -112,20 +112,20 @@ void getTemperature(OneWire &ow, int parameter, byte errorFlag) {
       return;
   }
 
-  protectThread();
+nilSemWait(&lockTimeCriticalZone);
   ow.reset();
   ow.select(addr);
   ow.write(0x44, 1);        // start conversion, with parasite power on at the end
-  unprotectThread();
+ nilSemSignal(&lockTimeCriticalZone);
 
   nilThdSleepMilliseconds(800);     // maybe 750ms is enough, maybe not
   // we might do a ds.depower() here, but the reset will take care of it.
 
-  protectThread();
+  nilSemWait(&lockTimeCriticalZone);
   present = ow.reset();
   ow.select(addr);
   ow.write(0xBE);         // Read Scratchpad
-  unprotectThread();
+  nilSemSignal(&lockTimeCriticalZone);
 
 #ifdef DEBUG_ONEWIRE
   Serial.print(F("  Data = "));
@@ -190,7 +190,7 @@ void oneWireInfo(Print* output) { // TODO
 }
 
 void oneWireInfoSS(OneWire &ow, Print* output) { // TODO
-  protectThread();
+  nilSemWait(&lockTimeCriticalZone);
   ow.reset_search();
   while (ow.search(oneWireAddress)) {
     for (byte i = 0; i < 8; i++) {
@@ -200,5 +200,5 @@ void oneWireInfoSS(OneWire &ow, Print* output) { // TODO
     output->println("");
     nilThdSleepMilliseconds(250);
   }
-  unprotectThread();
+  nilSemSignal(&lockTimeCriticalZone);
 }

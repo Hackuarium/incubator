@@ -405,16 +405,25 @@ void rotate() {
 
 
 void eventRotaryPressed() {
+  cli();
   byte state = digitalRead(ROT_PUSH);
+  long unsigned eventMillis = millis();
   if (state == 0) {
-    if (rotaryMayPress && ((millis() - lastRotaryEvent) > 200)) {
+    if (rotaryMayPress && ((eventMillis - lastRotaryEvent) > 200)) {
       rotaryPressed = true;
       rotaryMayPress = false;
-      lastRotaryEvent = millis();
+      lastRotaryEvent = eventMillis;
     }
   } else {
     rotaryMayPress = true;
+    if ((eventMillis - lastRotaryEvent) > 5000) {
+      reboot();
+    }
   }
+  sei();
 }
+
+
+
 
 #endif
