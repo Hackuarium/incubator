@@ -1,12 +1,12 @@
 
 
-
-
 #define PARAM_TEMP_EXT_1    0
 #define PARAM_TEMP_EXT_2    1
-#define PARAM_TEMP_PCB      2
-#define PARAM_TEMP_TARGET   3
-#define PARAM_HBRIDGE_PID   4
+#define PARAM_TEMP_TARGET   2
+#define PARAM_HBRIDGE_PID   3
+
+#define PARAM_TEMP_PCB      8
+
 
 #define PARAM_TEMP_TARGET_1  10
 #define PARAM_TIME_1         11
@@ -14,6 +14,10 @@
 #define PARAM_TIME_2         13
 #define PARAM_TEMP_TARGET_3  14
 #define PARAM_TIME_3         15
+
+
+#define PARAM_FLAGS           17 
+#define PARAM_FLAG_INVERT_ROTARY 0  // invert rotary direction
 
 #define PARAM_CURRENT_TIME   20
 #define PARAM_STATE          21 // current state
@@ -60,6 +64,7 @@ void resetParameters() {
   setAndSaveParameter(PARAM_TEMP_TARGET_3, 20);
   setAndSaveParameter(PARAM_TIME_3, 30);
 
+  setAndSaveParameter(PARAM_FLAGS, 0);
   setAndSaveParameter(PARAM_MENU, 0);
   setAndSaveParameter(PARAM_ERROR, 0);
   setAndSaveParameter(PARAM_STATUS, 0);

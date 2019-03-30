@@ -62,20 +62,20 @@ void lcdMenu() {
     previousMenu = currentMenu;
   }
   if (rotaryCounter == 0 && ! rotaryPressed) {
-    if (noEventCounter < 255) noEventCounter++;
+    if (noEventCounter < 32760) noEventCounter++;
   } else {
     noEventCounter = 0;
   }
   if (noEventCounter > 250 && getParameter(PARAM_STATUS) == 0) {
     if (currentMenu - currentMenu % 10 != 20) currentMenu = 20;
     captureCounter = false;
-    noEventCounter = 0;
   }
   boolean doAction = rotaryPressed;
   rotaryPressed = false;
   int counter = rotaryCounter;
   rotaryCounter = 0;
-  switch (currentMenu % 10 ) {
+
+  switch (currentMenu - currentMenu % 10 ) {
     case 0:
       lcdMenuHome(counter, doAction);
       break;
@@ -92,30 +92,38 @@ void lcdMenu() {
 }
 
 void lcdStatus(int counter, boolean doAction) {
-  /*
-     #define PARAM_TEMP_EXT_1    0
-    #define PARAM_TEMP_EXT_2    1
-    #define PARAM_TEMP_PCB      2
-    #define PARAM_TEMP_TARGET   3
-    #define PARAM_HBRIDGE_PID   4
-  */
   if (doAction) setParameter(PARAM_MENU, 0);
-  updateCurrentMenu(counter, 1); // only one menu
+  updateCurrentMenu(counter, 2);
   if (noEventCounter < 2) lcd.clear();
   byte menu = getParameter(PARAM_MENU) % 10;
-  lcd.setCursor(0, 0);
-  lcd.print("T1:");
-  lcd.print(getParameter(PARAM_TEMP_EXT_1));
-  lcd.print(" ");
-  lcd.setCursor(8, 0);
-  lcd.print("T2:");
-  lcd.print(getParameter(PARAM_TEMP_EXT_2));
-  lcd.print(" ");
-  lcdPrintBlank(2);
-  lcd.setCursor(0, 1);
-  lcdPrintBlank(2);
-  lcd.setCursor(8, 1);
-  lcdPrintBlank(2);
+  switch (menu) {
+    case 0:
+      lcd.setCursor(0, 0);
+      lcd.print("T1:");
+      lcd.print((double)getParameter(PARAM_TEMP_EXT_1)/100);
+      lcd.print(" ");
+      lcd.setCursor(8, 0);
+      lcd.print("T2:");
+      lcd.print((double)getParameter(PARAM_TEMP_EXT_2)/100);
+      lcd.print(" ");
+      lcdPrintBlank(2);
+      lcd.setCursor(0, 1);
+      lcd.print("Target:");
+      lcd.print((double)getParameter(PARAM_TEMP_TARGET)/100);
+      lcdPrintBlank(2);
+      break;
+    case 1:
+      lcd.setCursor(0, 0);
+      lcd.print("PCB:");
+      lcd.print((double)getParameter(PARAM_TEMP_PCB)/100);
+      lcd.print(" ");
+      lcd.setCursor(0, 1);
+      lcd.print("PID:");
+      lcd.print(getParameter(PARAM_HBRIDGE_PID));
+      lcd.print("  ");
+      break;
+  }
+
 }
 
 
@@ -148,7 +156,6 @@ void lcdMenuHome(int counter, boolean doAction) {
   lcd.clear();
   byte lastMenu = 5;
   updateCurrentMenu(counter, lastMenu);
-
   for (byte line = 0; line < LCD_NB_ROWS; line++) {
     lcd.setCursor(0, line);
     if ( getParameter(PARAM_MENU) % 10 + line <= lastMenu) lcdNumberLine(line);
@@ -230,10 +237,11 @@ void lcdUtilities(int counter, boolean doAction) {
 
 void lcdMenuSettings(int counter, boolean doAction) {
 
-  byte lastMenu = 7;
+  byte lastMenu = 8;
   if (! captureCounter) updateCurrentMenu(counter, lastMenu);
 
   byte currentParameter = 0;
+  int8_t currentParameterBit = -1;
   float currentFactor = 1;
   byte parameterNumber = 0;
   char currentUnit[5] = "\0";
@@ -293,11 +301,19 @@ void lcdMenuSettings(int counter, boolean doAction) {
       strcpy(currentUnit, "min\0");
       break;
     case 7:
+      lcd.print(F("Rotary inverse"));
+      currentParameter = PARAM_FLAGS;
+      currentParameterBit = PARAM_FLAG_INVERT_ROTARY;
+      minValue = 0;
+      maxValue = 1;
+      break;
+    case 8:
       lcd.print(F("Main menu"));
       if (doAction) {
         setParameter(PARAM_MENU, 1);
       }
       return;
+
   }
 
   if (doAction) {
@@ -307,8 +323,16 @@ void lcdMenuSettings(int counter, boolean doAction) {
     }
   }
   if (captureCounter) {
-    int newValue = getParameter(currentParameter) + counter;
-    setParameter(currentParameter, max(min(maxValue, newValue), minValue));
+    if (currentParameterBit == -1) {
+      int newValue = getParameter(currentParameter) + counter;
+      setParameter(currentParameter, max(min(maxValue, newValue), minValue));
+    } else { // flag kind so either true or false
+      if (counter > 0) {
+        setParameterBit(currentParameter, currentParameterBit);
+      } else if (counter < 0) {
+        clearParameterBit(currentParameter, currentParameterBit);
+      }
+    }
   }
 
   lcd.setCursor(0, 1);
@@ -319,10 +343,18 @@ void lcdMenuSettings(int counter, boolean doAction) {
   }
   switch (getParameter(PARAM_MENU) % 10) {
     default:
-      if (currentFactor == 1) {
-        lcd.print((getParameter(currentParameter)));
-      } else {
-        lcd.print(((float)getParameter(currentParameter))*currentFactor);
+      if (currentParameterBit == -1) {
+        if (currentFactor == 1) {
+          lcd.print((getParameter(currentParameter)));
+        } else {
+          lcd.print(((float)getParameter(currentParameter))*currentFactor);
+        }
+      } else {// it is a flag so we need to display true or false
+        if (getParameterBit(currentParameter, currentParameterBit)) {
+          lcd.print("true");
+        } else {
+          lcd.print("false");
+        }
       }
       lcd.print(" ");
       lcd.print(currentUnit);
@@ -382,11 +414,11 @@ void rotate() {
     accelerationMode = 0;
   }
 
-  /*
-    if (getParameterBit(PARAM_FLAGS, PARAM_FLAG_INVERT_ROTARY) == 1) {
-      increment *= -1;
-    }
-  */
+
+  if (getParameterBit(PARAM_FLAGS, PARAM_FLAG_INVERT_ROTARY) == 1) {
+    increment *= -1;
+  }
+
   if (accelerationMode > 4) {
     rotaryCounter += (increment * accelerationMode);
   } else {

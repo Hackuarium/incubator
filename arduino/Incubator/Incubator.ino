@@ -1,6 +1,12 @@
 
 #define THR_SERIAL      1
 #define MAX_PARAM       26
+
+#define THR_EEPROM_LOGGER 1
+#define NUMBER_PARAMETERS_TO_LOG 6  // defines the number of parameters to log
+// allowed values: 1, 2, 3, 4, 6, 8, 10, 14
+// 2 first entries in the log will be logID and secodns between
+#define LOG_INTERVAL 360   // we log every 6 minutes
 #include "libino/hack.h"
 
 
@@ -17,9 +23,12 @@
 
 #define THR_ERROR 13 // define the pin to blink if there is an error
 
+
+
+
 void setup() {
   setupParameters();
-   checkParameters(); 
+  checkParameters();
   nilSysBegin();
 }
 
