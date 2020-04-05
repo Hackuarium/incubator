@@ -13,4 +13,14 @@ but also to cool down and to define a temperature program. Like that you could i
 couple of culture plate at 37°C the Friday evening and program the incubator so 
 that it cools down to 4°C after 24h.
 
-Well this is still a work in progress. The PCB in done and functionnal. The fun starts now !
+Well this is still a work in progress. The PCB in done and functional. The fun starts now !
+
+## Cloning the proeject
+
+In order to clone it use:
+
+git clone --recurse-submodules https://github.com/hackuarium/incubator
+
+To update the submodules:
+
+git submodule update --recursive --remote
