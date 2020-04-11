@@ -52,9 +52,3 @@ NIL_THREADS_TABLE_ENTRY(NULL, ThreadMonitoring, NULL, waThreadMonitoring, sizeof
 
 
 NIL_THREADS_TABLE_END()
-
-
-
-
-
-

@@ -100,22 +100,26 @@ void lcdStatus(int counter, boolean doAction) {
     case 0:
       lcd.setCursor(0, 0);
       lcd.print("T1:");
-      lcd.print((double)getParameter(PARAM_TEMP_EXT_1)/100);
+      lcd.print((double)getParameter(PARAM_TEMP_EXT_1) / 100);
       lcd.print(" ");
       lcd.setCursor(8, 0);
       lcd.print("T2:");
-      lcd.print((double)getParameter(PARAM_TEMP_EXT_2)/100);
+      lcd.print((double)getParameter(PARAM_TEMP_EXT_2) / 100);
       lcd.print(" ");
       lcdPrintBlank(2);
       lcd.setCursor(0, 1);
-      lcd.print("Target:");
-      lcd.print((double)getParameter(PARAM_TEMP_TARGET)/100);
+      lcd.print("TG:");
+      lcd.print((double)getParameter(PARAM_TEMP_TARGET) / 100);
+      lcdPrintBlank(2);
+      lcd.setCursor(8, 1);
+      lcd.print("PID:");
+      lcd.print(getParameter(PARAM_HBRIDGE_PID));
       lcdPrintBlank(2);
       break;
     case 1:
       lcd.setCursor(0, 0);
       lcd.print("PCB:");
-      lcd.print((double)getParameter(PARAM_TEMP_PCB)/100);
+      lcd.print((double)getParameter(PARAM_TEMP_PCB) / 100);
       lcd.print(" ");
       lcd.setCursor(0, 1);
       lcd.print("PID:");
@@ -123,10 +127,7 @@ void lcdStatus(int counter, boolean doAction) {
       lcd.print("  ");
       break;
   }
-
 }
-
-
 
 void lcdNumberLine(byte line) {
   lcd.print(getParameter(PARAM_MENU) % 10 + line + 1);
@@ -206,7 +207,7 @@ void lcdMenuHome(int counter, boolean doAction) {
 void lcdUtilities(int counter, boolean doAction) {
   if (noEventCounter > 2) return;
   lcd.clear();
-  byte lastMenu = 1;
+  byte lastMenu = 2;
   updateCurrentMenu(counter, lastMenu);
 
   for (byte line = 0; line < LCD_NB_ROWS; line++) {
@@ -225,7 +226,13 @@ void lcdUtilities(int counter, boolean doAction) {
         lcd.print(F("Reset parameters"));
         if (doAction) {
           resetParameters();
-          setParameter(PARAM_MENU, 20);
+          setParameter(PARAM_MENU, 0);
+        }
+        break;
+      case 2:
+        lcd.print(F("Main menu"));
+        if (doAction) {
+          setParameter(PARAM_MENU, 0);
         }
         break;
 
@@ -237,7 +244,7 @@ void lcdUtilities(int counter, boolean doAction) {
 
 void lcdMenuSettings(int counter, boolean doAction) {
 
-  byte lastMenu = 8;
+  byte lastMenu = 9;
   if (! captureCounter) updateCurrentMenu(counter, lastMenu);
 
   byte currentParameter = 0;
@@ -254,60 +261,80 @@ void lcdMenuSettings(int counter, boolean doAction) {
     case 0:
       lcd.print(F("Default temp."));
       currentParameter = PARAM_TEMP_TARGET;
-      minValue = -10;
-      maxValue = 50;
+      currentFactor = 0.01;
+      minValue = -1000;
+      maxValue = 5000;
       strcpy(currentUnit, "\xDF\x43");
       break;
     case 1:
-      lcd.print(F("Temperature 1"));
-      currentParameter = PARAM_TEMP_TARGET_1;
-      minValue = -10;
-      maxValue = 50;
-      strcpy(currentUnit, "\xDF\x43");
+      lcd.print(F("External fan"));
+      currentParameter = PARAM_FAN_EXTERNAL;
+      minValue = 0;
+      maxValue = 255;
+      strcpy(currentUnit, "\0");
       break;
     case 2:
-      lcd.print(F("Wating time 1"));
+      lcd.print(F("Internal fan"));
+      currentParameter = PARAM_FAN_INTERNAL;
+      minValue = 0;
+      maxValue = 255;
+      strcpy(currentUnit, "\0");
+      break;
+    case 3:
+      lcd.print(F("Temperature 1"));
+      currentParameter = PARAM_TEMP_TARGET_1;
+      currentFactor = 0.01;
+      minValue = -1000;
+      maxValue = 5000;
+      strcpy(currentUnit, "\xDF\x43");
+      break;
+    case 4:
+      lcd.print(F("Waiting time 1"));
       currentParameter = PARAM_TIME_1;
       minValue = 0;
       maxValue = 10000;
       strcpy(currentUnit, "min.\0");
       break;
-    case 3:
+    case 5:
       lcd.print(F("Temperature 2"));
       currentParameter = PARAM_TEMP_TARGET_2;
-      minValue = -10;
-      maxValue = 50;
+      currentFactor = 0.01;
+      minValue = -1000;
+      maxValue = 5000;
       strcpy(currentUnit, "\xDF\x43");
       break;
-    case 4:
+    case 6:
       lcd.print(F("Waiting time 2"));
       currentParameter = PARAM_TIME_2;
       minValue = 0;
       maxValue = 10000;
       strcpy(currentUnit, "min.\0");
       break;
-    case 5:
+    case 7:
       lcd.print(F("Temperature 3"));
       currentParameter = PARAM_TEMP_TARGET_3;
-      minValue = -10;
-      maxValue = 50;
+      currentFactor = 0.01;
+      minValue = -1000;
+      maxValue = 5000;
       strcpy(currentUnit, "\xDF\x43");
       break;
-    case 6:
+    case 8:
       lcd.print(F("Waiting time 3"));
       currentParameter = PARAM_TIME_3;
       minValue = 0;
       maxValue = 10000;
       strcpy(currentUnit, "min\0");
       break;
-    case 7:
+      /*
+    case 9:
       lcd.print(F("Rotary inverse"));
       currentParameter = PARAM_FLAGS;
       currentParameterBit = PARAM_FLAG_INVERT_ROTARY;
       minValue = 0;
       maxValue = 1;
       break;
-    case 8:
+      */
+    case 9:
       lcd.print(F("Main menu"));
       if (doAction) {
         setParameter(PARAM_MENU, 1);
@@ -380,7 +407,7 @@ void setupRotary() {
   attachInterrupt(digitalPinToInterrupt(ROT_PUSH), eventRotaryPressed, CHANGE);
 }
 
-boolean accelerationMode = false;
+byte accelerationMode = 0;
 int lastIncrement = 0;
 
 
@@ -407,9 +434,8 @@ void rotate() {
   lastRotaryEvent = current;
 
   if (diff < 50) {
-    accelerationMode++;
-    if (accelerationMode < 5) return;
-    if (accelerationMode > 20) accelerationMode = 20;
+    accelerationMode+=5;
+    if (accelerationMode > 50) accelerationMode = 50;
   } else {
     accelerationMode = 0;
   }

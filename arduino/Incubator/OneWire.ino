@@ -1,6 +1,6 @@
 #include "libino/onewire/OneWire.cpp"
 
-//#define DEBUG_ONEWIRE 1
+// #define DEBUG_ONEWIRE 1
 
 byte oneWireAddress[8];
 

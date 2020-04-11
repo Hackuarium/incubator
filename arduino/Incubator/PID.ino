@@ -29,23 +29,23 @@ NIL_THREAD(ThreadPID, arg) {
       digitalWrite(FAN_INTERNAL, LOW);
       digitalWrite(HBRIDGE_INH, LOW);
     } else {
-      if ( getParameterBit(PARAM_ENABLED,FLAG_FAN_EXTERNAL_CONTROL)) {
-        digitalWrite(FAN_EXTERNAL, HIGH);
+      if ( getParameterBit(PARAM_ENABLED, FLAG_FAN_EXTERNAL_CONTROL)) {
+        analogWrite(FAN_EXTERNAL, getParameter(PARAM_FAN_EXTERNAL));
       } else {
         digitalWrite(FAN_EXTERNAL, LOW);
       }
-      if ( getParameterBit(PARAM_ENABLED,FLAG_FAN_INTERNAL_CONTROL)) {
-        digitalWrite(FAN_INTERNAL, HIGH);
+      if ( getParameterBit(PARAM_ENABLED, FLAG_FAN_INTERNAL_CONTROL)) {
+        analogWrite(FAN_INTERNAL, getParameter(PARAM_FAN_INTERNAL));
       } else {
         digitalWrite(FAN_INTERNAL, LOW);
       }
 
 
-      
-      if ( getParameterBit(PARAM_ENABLED,FLAG_PID_CONTROL)) {
+
+      if ( getParameterBit(PARAM_ENABLED, FLAG_PID_CONTROL)) {
         digitalWrite(HBRIDGE_INH, HIGH);
 
-        heatingRegInput = getParameter(PARAM_TEMP_EXT_1);
+        heatingRegInput = (getParameter(PARAM_TEMP_EXT_1) + getParameter(PARAM_TEMP_EXT_2)) / 2;
         heatingRegSetpoint = getParameter(PARAM_TEMP_TARGET);
         heatingRegPID.Compute();    // the computation takes only 30ms!
 
