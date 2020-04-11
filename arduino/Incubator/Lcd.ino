@@ -75,7 +75,7 @@ void lcdMenu() {
   int counter = rotaryCounter;
   rotaryCounter = 0;
 
-  switch (currentMenu - currentMenu % 10 ) {
+  switch (currentMenu < 100 ? currentMenu - currentMenu % 10 : currentMenu - currentMenu % 100) {
     case 0:
       lcdMenuHome(counter, doAction);
       break;
@@ -88,6 +88,39 @@ void lcdMenu() {
     case 40:
       lcdUtilities(counter, doAction);
       break;
+    case 100:
+      lcdResults(counter, doAction);
+      break;
+  }
+}
+
+
+void lcdResults(int counter, boolean doAction) {
+  if (doAction) setParameter(PARAM_MENU, 0);
+  if (noEventCounter < 2) lcd.clear();
+
+  int nextLogEntry =  getNextLogEntryID();
+  updateCurrentMenu(counter, nextLogEntry - 1, 50);
+
+  int start = getParameter(PARAM_MENU) % 100 - 1;
+  boolean header = start == -1;
+  int firstLogEntry = getFirstLogEntryID();
+
+  start += firstLogEntry;
+
+  for (int i = start; i < min(nextLogEntry, start + LCD_NB_ROWS); i++) {
+    lcd.setCursor(0, i - start);
+    if (header) {
+      lcd.print(F("T1    T2    PID"));
+      header = false;
+    } else {
+      lcd.print(((float)getParameterFromLog(i, PARAM_TEMP_EXT_1)) / 100);
+      lcd.setCursor(6, i - start);
+      lcd.print(((float)getParameterFromLog(i, PARAM_TEMP_EXT_2)) / 100);
+      lcd.setCursor(12, i - start);
+      lcd.print(getParameterFromLog(i, PARAM_HBRIDGE_PID));
+    }
+    lcdPrintBlank(6);
   }
 }
 
@@ -155,7 +188,7 @@ void updateCurrentMenu(int counter, byte maxValue, byte modulo) {
 void lcdMenuHome(int counter, boolean doAction) {
   if (noEventCounter > 2) return;
   lcd.clear();
-  byte lastMenu = 5;
+  byte lastMenu = 4;
   updateCurrentMenu(counter, lastMenu);
   for (byte line = 0; line < LCD_NB_ROWS; line++) {
     lcd.setCursor(0, line);
@@ -163,37 +196,52 @@ void lcdMenuHome(int counter, boolean doAction) {
 
     switch (getParameter(PARAM_MENU) % 10 + line) {
       case 0:
-        lcd.print(F("Stop control"));
-        if (doAction) {
-          setParameter(PARAM_STATUS, STATE_OFF);
+        if (getParameter(PARAM_STATE) == STATE_CONSTANT) {
+          lcd.print(F("Stop control"));
+          if (doAction) {
+            setAndSaveParameter(PARAM_STATUS, STATE_OFF);
+          }
+        } else {
+          lcd.print(F("Start control"));
+          if (doAction) {
+            setAndSaveParameter(PARAM_STATE, STATE_CONSTANT);
+          }
         }
         break;
-      case 1:
+      /*
+        case 1:
         lcd.print(F("Constant temp."));
         if (doAction) {
-          setParameter(PARAM_STATUS, STATE_CONSTANT);
+        setParameter(PARAM_STATUS, STATE_CONSTANT);
         }
         break;
-      case 2:
+        case 2:
         lcd.print(F("Temp. program"));
         if (doAction) {
-          setParameter(PARAM_STATUS, STATE_PROGRAM);
-          setParameter(PARAM_CURRENT_TIME, 0);
+        setParameter(PARAM_STATUS, STATE_PROGRAM);
+        setParameter(PARAM_CURRENT_TIME, 0);
         }
         break;
-      case 3:
+      */
+      case 1:
         lcd.print(F("Settings"));
         if (doAction) {
           setParameter(PARAM_MENU, 10);
         }
         break;
-      case 4:
+      case 2:
         lcd.print(F("Status"));
         if (doAction) {
           setParameter(PARAM_MENU, 20);
         }
         break;
-      case 5:
+      case 3:
+        lcd.print(F("Logs"));
+        if (doAction) {
+          setParameter(PARAM_MENU, 100);
+        }
+        break;
+      case 4:
         lcd.print(F("Utilities"));
         if (doAction) {
           setParameter(PARAM_MENU, 40);
@@ -325,15 +373,15 @@ void lcdMenuSettings(int counter, boolean doAction) {
       maxValue = 10000;
       strcpy(currentUnit, "min\0");
       break;
-      /*
-    case 9:
+    /*
+      case 9:
       lcd.print(F("Rotary inverse"));
       currentParameter = PARAM_FLAGS;
       currentParameterBit = PARAM_FLAG_INVERT_ROTARY;
       minValue = 0;
       maxValue = 1;
       break;
-      */
+    */
     case 9:
       lcd.print(F("Main menu"));
       if (doAction) {
@@ -434,7 +482,7 @@ void rotate() {
   lastRotaryEvent = current;
 
   if (diff < 50) {
-    accelerationMode+=5;
+    accelerationMode += 5;
     if (accelerationMode > 50) accelerationMode = 50;
   } else {
     accelerationMode = 0;

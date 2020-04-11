@@ -31,7 +31,7 @@
 
 void setup() {
 
-delay(5000);
+delay(500);
   
   setupParameters();
   checkParameters();

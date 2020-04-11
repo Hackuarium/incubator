@@ -24,7 +24,7 @@ NIL_THREAD(ThreadPID, arg) {
 
 
   while (true) {
-    if (isError()) {
+    if (isError() || getParameter(PARAM_STATE) != STATE_CONSTANT) {
       digitalWrite(FAN_EXTERNAL, LOW);
       digitalWrite(FAN_INTERNAL, LOW);
       digitalWrite(HBRIDGE_INH, LOW);

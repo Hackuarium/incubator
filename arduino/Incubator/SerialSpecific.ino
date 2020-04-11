@@ -8,17 +8,17 @@ void processSpecificCommand(char* data, char* paramValue, Print* output) {
     case 'd':
       setParameter(PARAM_STATUS, STATE_OFF);
       break;
-    case 'p':
-      setParameter(PARAM_STATUS, STATE_PROGRAM);
-      setParameter(PARAM_CURRENT_TIME, 0);
-      break;
-
+      /*
+        case 'p':
+        setParameter(PARAM_STATUS, STATE_PROGRAM);
+        setParameter(PARAM_CURRENT_TIME, 0);
+        break;
+      */
   }
 }
 
 void printSpecificHelp(Print * output) {
   output->println(F("(c)onstant"));
   output->println(F("(d)isable"));
-  output->println(F("(p)rogram"));
+  // output->println(F("(p)rogram"));
 }
-
