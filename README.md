@@ -15,7 +15,7 @@ that it cools down to 4°C after 24h.
 
 Well this is still a work in progress. The PCB in done and functional. The fun starts now !
 
-## Cloning the proeject
+## Cloning the project
 
 In order to clone it use:
 
